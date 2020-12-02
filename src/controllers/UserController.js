@@ -59,25 +59,44 @@ module.exports = {
     let user;
 
     try {
-      const hashedPassword = await hashPassword(password);
+      if (password !== "") {
+        const hashedPassword = await hashPassword(password);
 
-      user = await User.findById(_id);
-      if (!user) {
-        return response.status(400).json({ error: "User not found" });
+        user = await User.findById(_id);
+        if (!user) {
+          return response.status(400).json({ error: "User not found" });
+        }
+
+        user = await User.findByIdAndUpdate(
+          _id,
+          {
+            email,
+            cellphone,
+            address,
+            password: hashedPassword,
+          },
+          { new: true }
+        );
+
+        return response.status(200).json(user);
+      } else {
+        user = await User.findById(_id);
+        if (!user) {
+          return response.status(400).json({ error: "User not found" });
+        }
+
+        user = await User.findByIdAndUpdate(
+          _id,
+          {
+            email,
+            cellphone,
+            address,
+          },
+          { new: true }
+        );
+
+        return response.status(200).json(user);
       }
-
-      user = await User.findByIdAndUpdate(
-        _id,
-        {
-          email,
-          cellphone,
-          address,
-          password: hashedPassword,
-        },
-        { new: true }
-      );
-
-      return response.status(200).json(user);
     } catch (error) {
       return response.status(400).json({ error: error });
     }
