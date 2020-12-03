@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const hashPassword = require("./hashPassword");
+const hash = require("./hashPassword");
 
 module.exports = {
   async create(request, response) {
@@ -16,7 +16,7 @@ module.exports = {
     let user;
 
     try {
-      const hashedPassword = await hashPassword(password);
+      const hashedPassword = await hash.hashPassword(password);
 
       user = await User.findOne({ email });
       if (user) {
